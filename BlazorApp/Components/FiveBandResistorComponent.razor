@@ -1,9 +1,8 @@
-﻿@code {
-    [Parameter]
-    public string Title { get; set; }
-}
+﻿@using BlazorApp.Data;
+@inject ResistorServices ResistorServices;
 
 @{
+    @* SVG variables *@
     var numberOfBand = 5;
     var bandRightMargin = 40;
     var bandWidth = 20;
@@ -18,9 +17,12 @@
     var rightLine = 100;
 
     var svgWidth = leftLine + marginEnd + ((numberOfBand - 1) * (bandWidth + bandRightMargin)) + bandWidth + marginEnd + rightLine;
+}
 
-    <h3 class="text-center">@Title</h3>
-    <div class="d-flex justify-content-center">
+<div class="d-flex flex-column align-items-center">
+    <h3>@Title</h3>
+    @* Five band resistor SVG *@
+    <div class="my-md-5 justify-content-center">
         <svg width="@svgWidth" height="100%" xmlns="http://www.w3.org/2000/svg">
             <line x1="0" x2="100%" y1="50%" y2="50%" stroke="grey" stroke-width="2"></line>
             <rect class="resistor" x="@leftLine" width="@(svgWidth - leftLine - rightLine)" height="100%" fill="white" stroke="grey" />
@@ -36,4 +38,86 @@
             <rect class="resistor-toleranceband" x="@toleranceBandX" width="@bandWidth" height="100%" fill="green" />
         </svg>
     </div>
+
+    @* drop down selection for bands *@
+    <div class="my-md-5 d-flex flex-row w-100">
+        <div class="d-flex flex-column flex-fill">
+            <label>First Band</label>
+            <select name="SelectedFirstBandColor" @bind="SelectedFirstBandColor">
+                @foreach (var color in FirstBandColors)
+                {
+                    <option value="@color" id="@color">[@color, @Array.IndexOf(FirstBandColors, color)]</option>
+                }
+            </select>
+        </div>
+        <div class="d-flex flex-column flex-fill">
+            <label>Second Band</label>
+            <select name="SelectedFirstBandColor" @bind="SelectedSecondBandColor">
+                @foreach (var color in SecondBandColors)
+                {
+                    <option value="@color" id="@color">[@color, @Array.IndexOf(FirstBandColors, color)]</option>
+                }
+            </select>
+        </div>
+        <div class="d-flex flex-column flex-fill">
+            <label>Third Band</label>
+            <select name="SelectedFirstBandColor" @bind="SelectedThirdBandColor">
+                @foreach (var color in ThirdBandColors)
+                {
+                    <option value="@color" id="@color">[@color, @Array.IndexOf(FirstBandColors, color)]</option>
+                }
+            </select>
+        </div>
+        <div class="d-flex flex-column flex-fill">
+            <label>Multiplier Band</label>
+            <select name="SelectedFirstBandColor" @bind="SelectedMultiplierBandColor">
+                @foreach (var color in MultiplierBandColors)
+                {
+                    <option value="@color" id="@color">@color</option>
+                }
+            </select>
+        </div>
+        <div class="d-flex flex-column flex-fill">
+            <label>Tolerance Band</label>
+            <select name="SelectedFirstBandColor" @bind="SelectedToleranceBandColor">
+                @foreach (var color in ToleranceBandColors)
+                {
+                    <option value="@color" id="@color">@color</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="w-100">
+        <label>Resistance value: </label>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+
+    public string SelectedFirstBandColor { get; set; }
+    public string[] FirstBandColors { get; set; }
+
+    public string SelectedSecondBandColor { get; set; }
+    public string[] SecondBandColors { get; set; }
+
+    public string SelectedThirdBandColor { get; set; }
+    public string[] ThirdBandColors { get; set; }
+
+    public string SelectedMultiplierBandColor { get; set; }
+    public Dictionary<string, double> MultiplierBandColors { get; set; }
+
+    public string SelectedToleranceBandColor { get; set; }
+    public Dictionary<string, double> ToleranceBandColors { get; set; }
+
+    protected override void OnInitialized()
+    {
+        FirstBandColors = ResistorServices.GetBands();
+        SecondBandColors = ResistorServices.GetBands();
+        ThirdBandColors = ResistorServices.GetBands();
+        MultiplierBandColors = ResistorServices.GetMultipliers();
+        ToleranceBandColors = ResistorServices.GetTolerances();
+    }
 }

@@ -27,15 +27,15 @@
             <line x1="0" x2="100%" y1="50%" y2="50%" stroke="grey" stroke-width="2"></line>
             <rect class="resistor" x="@leftLine" width="@(svgWidth - leftLine - rightLine)" height="100%" fill="white" stroke="grey" />
 
-            <rect class="resistor-firstband" x="@firstBandX" width="@bandWidth" height="100%" fill="red" />
+            <rect class="resistor-firstband" x="@firstBandX" width="@bandWidth" height="100%" fill="@SelectedFirstBandColor" stroke="grey"/>
 
-            <rect class="resistor-secondband" x="@secondBandX" width="@bandWidth" height="100%" fill="black" />
+            <rect class="resistor-secondband" x="@secondBandX" width="@bandWidth" height="100%" fill="@SelectedSecondBandColor" stroke="grey"/>
 
-            <rect class="resistor-thirdband" x="@thirdBandX" width="@bandWidth" height="100%" fill="green" />
+            <rect class="resistor-thirdband" x="@thirdBandX" width="@bandWidth" height="100%" fill="@SelectedThirdBandColor" stroke="grey"/>
 
-            <rect class="resistor-multiplierband" x="@multiplierBandX" width="@bandWidth" height="100%" fill="blue" />
+            <rect class="resistor-multiplierband" x="@multiplierBandX" width="@bandWidth" height="100%" fill="@SelectedMultiplierBandColor" stroke="grey"/>
 
-            <rect class="resistor-toleranceband" x="@toleranceBandX" width="@bandWidth" height="100%" fill="green" />
+            <rect class="resistor-toleranceband" x="@toleranceBandX" width="@bandWidth" height="100%" fill="@SelectedToleranceBandColor" stroke="grey"/>
         </svg>
     </div>
 
@@ -73,7 +73,7 @@
             <select name="SelectedFirstBandColor" @bind="SelectedMultiplierBandColor">
                 @foreach (var color in MultiplierBandColors)
                 {
-                    <option value="@color" id="@color">@color</option>
+                    <option value="@color.Key" id="@color">@color</option>
                 }
             </select>
         </div>
@@ -82,7 +82,7 @@
             <select name="SelectedFirstBandColor" @bind="SelectedToleranceBandColor">
                 @foreach (var color in ToleranceBandColors)
                 {
-                    <option value="@color" id="@color">@color</option>
+                    <option value="@color.Key" id="@color">@color</option>
                 }
             </select>
         </div>

@@ -30,6 +30,10 @@ namespace BlazorApp.Data
             }
         }
 
+        public ResistorFiveBand()
+        {
+        }
+
         // Constructor
         public ResistorFiveBand(
             string firstBandColor,

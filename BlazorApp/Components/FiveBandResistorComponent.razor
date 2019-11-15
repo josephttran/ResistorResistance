@@ -27,15 +27,15 @@
             <line x1="0" x2="100%" y1="50%" y2="50%" stroke="grey" stroke-width="2"></line>
             <rect class="resistor" x="@leftLine" width="@(svgWidth - leftLine - rightLine)" height="100%" fill="white" stroke="grey" />
 
-            <rect class="resistor-firstband" x="@firstBandX" width="@bandWidth" height="100%" fill="@SelectedFirstBandColor" stroke="grey"/>
+            <rect class="resistor-firstband" x="@firstBandX" width="@bandWidth" height="100%" fill="@ResistorFiveBand.FirstBandColor" stroke="grey" />
 
-            <rect class="resistor-secondband" x="@secondBandX" width="@bandWidth" height="100%" fill="@SelectedSecondBandColor" stroke="grey"/>
+            <rect class="resistor-secondband" x="@secondBandX" width="@bandWidth" height="100%" fill="@ResistorFiveBand.SecondBandColor" stroke="grey" />
 
-            <rect class="resistor-thirdband" x="@thirdBandX" width="@bandWidth" height="100%" fill="@SelectedThirdBandColor" stroke="grey"/>
+            <rect class="resistor-thirdband" x="@thirdBandX" width="@bandWidth" height="100%" fill="@ResistorFiveBand.ThirdBandColor" stroke="grey" />
 
-            <rect class="resistor-multiplierband" x="@multiplierBandX" width="@bandWidth" height="100%" fill="@SelectedMultiplierBandColor" stroke="grey"/>
+            <rect class="resistor-multiplierband" x="@multiplierBandX" width="@bandWidth" height="100%" fill="@ResistorFiveBand.MultiplierBandColor" stroke="grey" />
 
-            <rect class="resistor-toleranceband" x="@toleranceBandX" width="@bandWidth" height="100%" fill="@SelectedToleranceBandColor" stroke="grey"/>
+            <rect class="resistor-toleranceband" x="@toleranceBandX" width="@bandWidth" height="100%" fill="@ResistorFiveBand.ToleranceBandColor" stroke="grey" />
         </svg>
     </div>
 
@@ -43,7 +43,7 @@
     <div class="my-md-5 d-flex flex-row w-100">
         <div class="d-flex flex-column flex-fill">
             <label>First Band</label>
-            <select name="SelectedFirstBandColor" @bind="SelectedFirstBandColor">
+            <select name="SelectedFirstBandColor" @bind="ResistorFiveBand.FirstBandColor">
                 @foreach (var color in FirstBandColors)
                 {
                     <option value="@color" id="@color">[@color, @Array.IndexOf(FirstBandColors, color)]</option>
@@ -52,25 +52,25 @@
         </div>
         <div class="d-flex flex-column flex-fill">
             <label>Second Band</label>
-            <select name="SelectedFirstBandColor" @bind="SelectedSecondBandColor">
+            <select name="SelectedSecondBandColor" @bind="ResistorFiveBand.SecondBandColor">
                 @foreach (var color in SecondBandColors)
                 {
-                    <option value="@color" id="@color">[@color, @Array.IndexOf(FirstBandColors, color)]</option>
+                    <option value="@color" id="@color">[@color, @Array.IndexOf(SecondBandColors, color)]</option>
                 }
             </select>
         </div>
         <div class="d-flex flex-column flex-fill">
             <label>Third Band</label>
-            <select name="SelectedFirstBandColor" @bind="SelectedThirdBandColor">
+            <select name="SelectedThridBandColor" @bind="ResistorFiveBand.ThirdBandColor">
                 @foreach (var color in ThirdBandColors)
                 {
-                    <option value="@color" id="@color">[@color, @Array.IndexOf(FirstBandColors, color)]</option>
+                    <option value="@color" id="@color">[@color, @Array.IndexOf(ThirdBandColors, color)]</option>
                 }
             </select>
         </div>
         <div class="d-flex flex-column flex-fill">
             <label>Multiplier Band</label>
-            <select name="SelectedFirstBandColor" @bind="SelectedMultiplierBandColor">
+            <select name="SelectedMultiplierBandColor" @bind="ResistorFiveBand.MultiplierBandColor">
                 @foreach (var color in MultiplierBandColors)
                 {
                     <option value="@color.Key" id="@color">@color</option>
@@ -79,7 +79,7 @@
         </div>
         <div class="d-flex flex-column flex-fill">
             <label>Tolerance Band</label>
-            <select name="SelectedFirstBandColor" @bind="SelectedToleranceBandColor">
+            <select name="SelectedToleranceBandColor" @bind="ResistorFiveBand.ToleranceBandColor">
                 @foreach (var color in ToleranceBandColors)
                 {
                     <option value="@color.Key" id="@color">@color</option>
@@ -87,9 +87,17 @@
             </select>
         </div>
     </div>
-
+    @* Button to update resistance value*@
+    <div>
+        <button type="button" @onclick="UpdateResistanceValue">Calculate Resistance</button>
+    </div>
     <div class="w-100">
-        <label>Resistance value: </label>
+        Resistance value: @ResistanceValue
+        @if (ResistanceValue > 0)
+        {
+            <text> &#x2126;</text>
+            <text> &#xb1; @ToleranceValue</text>
+        }
     </div>
 </div>
 
@@ -97,27 +105,41 @@
     [Parameter]
     public string Title { get; set; }
 
-    public string SelectedFirstBandColor { get; set; }
     public string[] FirstBandColors { get; set; }
-
-    public string SelectedSecondBandColor { get; set; }
     public string[] SecondBandColors { get; set; }
-
-    public string SelectedThirdBandColor { get; set; }
     public string[] ThirdBandColors { get; set; }
-
-    public string SelectedMultiplierBandColor { get; set; }
     public Dictionary<string, double> MultiplierBandColors { get; set; }
-
-    public string SelectedToleranceBandColor { get; set; }
     public Dictionary<string, double> ToleranceBandColors { get; set; }
+
+    public ResistorFiveBand ResistorFiveBand { get; set; }
+
+    public double ResistanceValue { get; set; }
+    public double ToleranceValue { get; set; }
 
     protected override void OnInitialized()
     {
+
         FirstBandColors = ResistorServices.GetBands();
         SecondBandColors = ResistorServices.GetBands();
         ThirdBandColors = ResistorServices.GetBands();
         MultiplierBandColors = ResistorServices.GetMultipliers();
         ToleranceBandColors = ResistorServices.GetTolerances();
+
+        ResistorFiveBand = new ResistorFiveBand
+        (
+            ResistorServices.ResistorFiveBand.FirstBandColor,
+            ResistorServices.ResistorFiveBand.SecondBandColor,
+            ResistorServices.ResistorFiveBand.ThirdBandColor,
+            ResistorServices.ResistorFiveBand.MultiplierBandColor,
+            ResistorServices.ResistorFiveBand.ToleranceBandColor
+        );
+        ResistanceValue = ResistorFiveBand.Resistance;
+        ToleranceValue = ResistorFiveBand.Tolerance;
+    }
+
+    private void UpdateResistanceValue()
+    {
+        ResistanceValue = ResistorFiveBand.Resistance;
+        ToleranceValue = ResistorFiveBand.Tolerance;
     }
 }

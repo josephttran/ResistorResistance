@@ -16,7 +16,9 @@ namespace BlazorApp.Data
             {
                 double digit = GetResistanceDigit();
                 double multiplierValue = ResistorColorValue.Multiplier[MultiplierBandColor];
-                return digit * multiplierValue;
+                double value = digit * multiplierValue;
+
+                return Math.Truncate((value * 100)) / 100;
             }
         }
 
@@ -25,8 +27,10 @@ namespace BlazorApp.Data
             get
             {
                 double digit = GetResistanceDigit();
-                double multiplierValue = ResistorColorValue.Multiplier[ToleranceBandColor];
-                return digit * multiplierValue;
+                double toleranceValue = ResistorColorValue.Tolerance[ToleranceBandColor];
+                double value = digit * toleranceValue;
+
+                return Math.Truncate((value * 10000)) / 10000;
             }
         }
 
